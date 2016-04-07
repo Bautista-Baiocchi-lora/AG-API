@@ -17,7 +17,11 @@ public abstract class GameObject {
 		this.position = position;
 		this.movable = movable;
 	}
-
+	
+	public void move(Position position){
+		this.position=position;
+	}
+	
 	public void renderGraphics(GraphicsContext gc) {
 		gc.drawImage(image, position.getX(), position.getY());
 	}
@@ -51,8 +55,7 @@ public abstract class GameObject {
 	}
 
 	public Rectangle2D getBoundary() {
-		return new Rectangle2D(position.getX(), position.getY(), image.getWidth(),
-				image.getHeight());
+		return new Rectangle2D(position.getX(), position.getY(), image.getWidth(), image.getHeight());
 	}
 
 	public boolean intersects(GameObject gameObject) {

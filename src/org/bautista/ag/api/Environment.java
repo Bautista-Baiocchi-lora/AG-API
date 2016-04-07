@@ -1,40 +1,41 @@
 package org.bautista.ag.api;
 
-import java.util.ArrayList;
-
 import org.bautista.ag.api.objects.GameObject;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
 
-public class Environment extends Canvas {
+import javafx.animation.AnimationTimer;
+
+public class Environment{
 
 	private static Environment instance;
-	private final GraphicsContext graphics;
-	private final ArrayList<GameObject> gameObjects;
+	private final Background background;
 
-	private Environment() {
-		graphics = this.getGraphicsContext2D();
-		gameObjects = new ArrayList<GameObject>();
+	public Environment(Background background) {
+		instance = this;
+		this.background=background;
+		initialize();
 	}
+	
+	public void initialize(){
+		new AnimationTimer(){
 
-	public void add(GameObject gameObject) {
-		gameObjects.add(gameObject);
-		renderGraphics();
+			@Override
+			public void handle(long now) {
+				System.out.println("here");				
+			}
+			
+		}.start();
 	}
-
-	public void remove(GameObject gameObject) {
-		gameObjects.remove(gameObject);
-		renderGraphics();
+	
+	public void add(GameObject gameObject){
+		background.add(gameObject);
 	}
-
-	private void renderGraphics() {
-		for (GameObject gameObject : gameObjects) {
-			gameObject.renderGraphics(graphics);
-		}
+	
+	public void remove(GameObject gameObject){
+		background.remove(gameObject);
 	}
 
 	public static Environment getInstance() {
-		return instance == null ? instance = new Environment() : instance;
+		return instance;
 	}
 
 }
