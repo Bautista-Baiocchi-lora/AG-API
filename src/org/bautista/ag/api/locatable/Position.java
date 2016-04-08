@@ -2,41 +2,32 @@ package org.bautista.ag.api.locatable;
 
 public class Position {
 
-	private int x;
-	private int y;
-	private int z;
+	private double x;
+	private double y;
 
-	public Position(int x, int y, int z) {
+	public Position(double x, double y) {
 		this.x = x;
 		this.y = y;
-		this.z = z;
 	}
 
-	public Position(int x, int y) {
-		this(x, y, 0);
-	}
-
-	public int getZ() {
-		return z;
-	}
-
-	public void setZ(int z) {
-		this.z = z;
-	}
-
-	public int getX() {
+	public double getX() {
 		return x;
 	}
 
-	public void setX(int x) {
+	public void setX(double x) {
 		this.x = x;
 	}
 
-	public int getY() {
+	public double getY() {
 		return y;
 	}
 
-	public void setY(int y) {
+	public void setY(double y) {
 		this.y = y;
+	}
+
+	@Override
+	public String toString() {
+		return "X: " + x + ", Y: " + y;
 	}
 }
