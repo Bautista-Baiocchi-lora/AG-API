@@ -21,8 +21,7 @@ public class Dimension {
 	}
 
 	public boolean contains(double x, double y, double buffer) {
-		return x < (width + buffer) && x > (1 + buffer) && y < (height + buffer)
-				&& y > (1 + buffer);
+		return x < (width + buffer) && x > (1 + buffer) && y < (height + buffer) && y > (1 + buffer);
 	}
 
 	public boolean contains(double x, double y) {
@@ -30,10 +29,8 @@ public class Dimension {
 	}
 
 	public boolean contains(GameObject gameObject) {
-		return contains(gameObject.getBoundary().getMaxX(), 1)
-				&& contains(gameObject.getBoundary().getMinX(), 1)
-				&& contains(1, gameObject.getBoundary().getMaxY())
-				&& contains(1, gameObject.getBoundary().getMinY());
+		return contains(gameObject.getBoundary().getMaxX(), 1) && contains(gameObject.getBoundary().getMinX(), 1)
+				&& contains(1, gameObject.getBoundary().getMaxY()) && contains(1, gameObject.getBoundary().getMinY());
 	}
 
 }

@@ -24,36 +24,30 @@ public abstract class GameObject extends ImageView {
 
 	private void updateLocation() {
 		if (movable) {
+			double nextY = (getY() - yVelocity);
+			double nextX = (getX() + xVelocity);
 			// hit right
-			if (!Environment.getInstance().getBackgroundDimension().contains(
-					(getBoundary().getMaxX()), getY()) && xVelocity != 0) {
+			if (!Environment.getInstance().getBackgroundDimension().contains((getBoundary().getMaxX() + xVelocity),
+					getY())) {
 				xVelocity = Environment.getInstance().hasRicochet()
-						? (-1 * (Environment.getInstance().getRicochet().getVelocityChange()
-								- xVelocity))
-						: 0;
+						? Environment.getInstance().getRicochet().applyRicochet(-1 * xVelocity) : 0;
 				// hit left
-			} else if (!Environment.getInstance().getBackgroundDimension().contains(
-					getX(), getY()) && xVelocity != 0) {
+			} else if (!Environment.getInstance().getBackgroundDimension().contains(nextX, getY())) {
 				xVelocity = Environment.getInstance().hasRicochet()
-						? (Environment.getInstance().getRicochet().getVelocityChange()
-								+ (-1 * xVelocity))
-						: 0;
+						? Environment.getInstance().getRicochet().applyRicochet(-1 * xVelocity) : 0;
 				// hit bottom
 			} else if (!Environment.getInstance().getBackgroundDimension().contains(getX(),
-					getBoundary().getMaxY()) && yVelocity != 0) {
-				System.out.println("Y: " + getY() + ", velocity: " + getYVelocity());
+					getBoundary().getMaxY() - yVelocity)) {
 				yVelocity = Environment.getInstance().hasRicochet()
-						? (Environment.getInstance().getRicochet().getVelocityChange()
-								+ (-1 * yVelocity))
-						: 0;
+						? Environment.getInstance().getRicochet().applyRicochet(-1 * yVelocity) : 0;
+				System.out.println("Next x: " + xVelocity);
+				System.out.println("Next y: " + yVelocity);
 				// hit top
-			} else if (!Environment.getInstance().getBackgroundDimension().contains(getX(),
-					getY()) && yVelocity != 0) {
-				System.out.println("Y: " + getY() + ", velocity: " + getYVelocity());
+			} else if (!Environment.getInstance().getBackgroundDimension().contains(getX(), nextY)) {
 				yVelocity = Environment.getInstance().hasRicochet()
-						? (Environment.getInstance().getRicochet().getVelocityChange()
-								- (-1 * yVelocity))
-						: 0;
+						? Environment.getInstance().getRicochet().applyRicochet(-1 * yVelocity) : 0;
+				System.out.println("Next x: " + xVelocity);
+				System.out.println("Next y: " + yVelocity);
 			}
 			reposition((getX() + xVelocity), (getY() - yVelocity));
 		}
@@ -99,13 +93,11 @@ public abstract class GameObject extends ImageView {
 	}
 
 	public boolean isElevated() {
-		return getBoundary().getMaxY() < Environment.getInstance()
-				.getBackgroundDimension().getHeight();
+		return getBoundary().getMaxY() < Environment.getInstance().getBackgroundDimension().getHeight();
 	}
 
 	public Rectangle2D getBoundary() {
-		return new Rectangle2D(getX(), getY(), image.getWidth(),
-				image.getHeight());
+		return new Rectangle2D(getX(), getY(), image.getWidth(), image.getHeight());
 	}
 
 	public boolean intersects(GameObject gameObject) {
@@ -114,8 +106,6 @@ public abstract class GameObject extends ImageView {
 
 	public void update() {
 		updateLocation();
-		System.out.println("Y: " + getY() + ", velocity: " + getYVelocity());
-		// System.out.println(getXVelocity());
 	}
 
 }

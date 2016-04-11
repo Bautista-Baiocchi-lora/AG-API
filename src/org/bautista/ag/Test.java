@@ -20,15 +20,14 @@ public class Test extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		Background background = new Background(new Group(), new Dimension(800, 800));
+		Background background = new Background(new Group(), new Dimension(600, 600));
 		Environment env = new Environment.Builder(background, new Gravity()).infinite(true)
-				.ricochet(new Ricochet(Ricochet.MINIMAL_INCREASE, true)).build();
+				.ricochet(new Ricochet(Ricochet.NONE, true)).build();
 		env.initialize();
 
-		LLama spr = new LLama(new Image(getClass().getResourceAsStream("picture.png")),
-				new Position(100, 5));
-		spr.setXVelocity(0);
-		spr.setYVelocity(0);
+		LLama spr = new LLama(new Image(getClass().getResourceAsStream("picture.png")), new Position(100, 100));
+		spr.setXVelocity(3);
+		spr.setYVelocity(1);
 		env.add(spr);
 	}
 
