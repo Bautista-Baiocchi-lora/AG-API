@@ -1,4 +1,4 @@
-package org.bautista.ag.api;
+package org.bautista.ag.api.background;
 
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class Background extends Scene {
 		root.getChildren().clear();
 	}
 
-	protected void renderGraphics(List<GameObject> gameObjects) {
+	public void renderGraphics(List<GameObject> gameObjects) {
 		clearGraphics();
 		for (GameObject gameObject : gameObjects) {
 			root.getChildren().add(gameObject);

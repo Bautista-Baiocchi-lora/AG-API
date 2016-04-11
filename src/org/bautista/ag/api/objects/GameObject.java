@@ -40,28 +40,27 @@ public abstract class GameObject extends ImageView {
 					getBoundary().getMaxY() - yVelocity)) {
 				yVelocity = Environment.getInstance().hasRicochet()
 						? Environment.getInstance().getRicochet().applyRicochet(-1 * yVelocity) : 0;
-				System.out.println("Next x: " + xVelocity);
-				System.out.println("Next y: " + yVelocity);
 				// hit top
 			} else if (!Environment.getInstance().getBackgroundDimension().contains(getX(), nextY)) {
 				yVelocity = Environment.getInstance().hasRicochet()
 						? Environment.getInstance().getRicochet().applyRicochet(-1 * yVelocity) : 0;
-				System.out.println("Next x: " + xVelocity);
-				System.out.println("Next y: " + yVelocity);
 			}
-			reposition((getX() + xVelocity), (getY() - yVelocity));
+			reposition((getX() + xVelocity), (getY() - yVelocity), false);
 		}
 	}
 
-	public void reposition(double x, double y) {
-		if (Environment.getInstance().getBackgroundDimension().contains(x, y)) {
+	public void reposition(double x, double y, boolean scroll) {
+		if (!scroll) {
+			setX(x);
+			setY(y);
+		} else if (Environment.getInstance().getBackgroundDimension().contains(x, y)) {
 			setX(x);
 			setY(y);
 		}
 	}
 
-	public void reposition(Position position) {
-		reposition(position.getX(), position.getY());
+	public void reposition(Position position, boolean scroll) {
+		reposition(position.getX(), position.getY(), scroll);
 	}
 
 	public boolean isMovable() {
