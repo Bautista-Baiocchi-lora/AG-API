@@ -3,56 +3,71 @@ package org.bautista.ag.api.objects;
 import org.bautista.ag.api.Environment;
 import org.bautista.ag.api.locatable.Position;
 
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
-public abstract class GameObject {
+public abstract class GameObject extends ImageView {
 
 	private Image image;
-	private Position position;
 	private final boolean movable;
 	private double xVelocity;
 	private double yVelocity;
 
 	public GameObject(Image image, Position position, boolean movable) {
+		super(image);
 		this.image = image;
-		this.position = position;
 		this.movable = movable;
+		setX(position.getX());
+		setY(position.getY());
 	}
 
-	public void move(Position position) {
+	private void updateLocation() {
 		if (movable) {
+			// hit right
 			if (!Environment.getInstance().getBackgroundDimension().contains(
-					(position.getX() + (getBoundary().getMaxX() - position.getX())), 0)
-					&& xVelocity != 0) {
-				xVelocity = 0;
+					(getBoundary().getMaxX()), getY()) && xVelocity != 0) {
+				xVelocity = Environment.getInstance().hasRicochet()
+						? (-1 * (Environment.getInstance().getRicochet().getVelocityChange()
+								- xVelocity))
+						: 0;
+				// hit left
+			} else if (!Environment.getInstance().getBackgroundDimension().contains(
+					getX(), getY()) && xVelocity != 0) {
+				xVelocity = Environment.getInstance().hasRicochet()
+						? (Environment.getInstance().getRicochet().getVelocityChange()
+								+ (-1 * xVelocity))
+						: 0;
+				// hit bottom
+			} else if (!Environment.getInstance().getBackgroundDimension().contains(getX(),
+					getBoundary().getMaxY()) && yVelocity != 0) {
+				System.out.println("Y: " + getY() + ", velocity: " + getYVelocity());
+				yVelocity = Environment.getInstance().hasRicochet()
+						? (Environment.getInstance().getRicochet().getVelocityChange()
+								+ (-1 * yVelocity))
+						: 0;
+				// hit top
+			} else if (!Environment.getInstance().getBackgroundDimension().contains(getX(),
+					getY()) && yVelocity != 0) {
+				System.out.println("Y: " + getY() + ", velocity: " + getYVelocity());
+				yVelocity = Environment.getInstance().hasRicochet()
+						? (Environment.getInstance().getRicochet().getVelocityChange()
+								- (-1 * yVelocity))
+						: 0;
 			}
-			if (!Environment.getInstance().getBackgroundDimension().contains(
-					position.getX(), 0) && xVelocity != 0) {
-				xVelocity = 0;
-			} else if (!Environment.getInstance().getBackgroundDimension().contains(0,
-					(position.getY() + (getBoundary().getMaxY() - position.getY())))
-					&& yVelocity != 0) {
-				yVelocity = 0;
-			} else if (!Environment.getInstance().getBackgroundDimension().contains(0,
-					position.getY()) && yVelocity != 0) {
-				yVelocity = 0;
-			} else {
-				this.position = position;
-			}
+			reposition((getX() + xVelocity), (getY() - yVelocity));
 		}
 	}
 
-	public void move(double x, double y) {
-		move(new Position(x, y));
+	public void reposition(double x, double y) {
+		if (Environment.getInstance().getBackgroundDimension().contains(x, y)) {
+			setX(x);
+			setY(y);
+		}
 	}
 
-	public void renderGraphics(GraphicsContext gc) {
-		gc.drawImage(image, position.getX(), position.getY());
+	public void reposition(Position position) {
+		reposition(position.getX(), position.getY());
 	}
 
 	public boolean isMovable() {
@@ -60,27 +75,7 @@ public abstract class GameObject {
 	}
 
 	public Position getPosition() {
-		return position;
-	}
-
-	public double getX() {
-		return position.getX();
-	}
-
-	public void setX(double x) {
-		position.setX(x);
-	}
-
-	public double getY() {
-		return position.getY();
-	}
-
-	public void setY(double y) {
-		position.setY(y);
-	}
-
-	public void setPosition(Position position) {
-		this.position = position;
+		return new Position(getX(), getY());
 	}
 
 	public boolean isMoving() {
@@ -109,7 +104,7 @@ public abstract class GameObject {
 	}
 
 	public Rectangle2D getBoundary() {
-		return new Rectangle2D(position.getX(), position.getY(), image.getWidth(),
+		return new Rectangle2D(getX(), getY(), image.getWidth(),
 				image.getHeight());
 	}
 
@@ -118,7 +113,9 @@ public abstract class GameObject {
 	}
 
 	public void update() {
-		move((getX() + getXVelocity()), (getY() - getYVelocity()));
+		updateLocation();
+		System.out.println("Y: " + getY() + ", velocity: " + getYVelocity());
+		// System.out.println(getXVelocity());
 	}
 
 }

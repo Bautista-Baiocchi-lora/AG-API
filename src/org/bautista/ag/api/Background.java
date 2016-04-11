@@ -5,28 +5,35 @@ import java.util.List;
 import org.bautista.ag.api.locatable.Dimension;
 import org.bautista.ag.api.objects.GameObject;
 
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.paint.Paint;
 
-public class Background extends Canvas {
+public class Background extends Scene {
 
-	private final GraphicsContext graphics;
 	private final Dimension dimension;
+	private final Group root;
 
-	public Background(Dimension dimension) {
-		super(dimension.getWidth(), dimension.getHeight());
+	public Background(Group root, Dimension dimension) {
+		super(root, dimension.getWidth(), dimension.getHeight());
+		this.root = root;
 		this.dimension = dimension;
-		graphics = this.getGraphicsContext2D();
+	}
+
+	public Background(Group root, Dimension dimension, Paint color) {
+		super(root, dimension.getWidth(), dimension.getHeight(), color);
+		this.root = root;
+		this.dimension = dimension;
 	}
 
 	private void clearGraphics() {
-		graphics.clearRect(0, 0, this.getWidth(), this.getHeight());
+		root.getChildren().clear();
 	}
 
 	protected void renderGraphics(List<GameObject> gameObjects) {
 		clearGraphics();
 		for (GameObject gameObject : gameObjects) {
-			gameObject.renderGraphics(graphics);
+			root.getChildren().add(gameObject);
 		}
 	}
 

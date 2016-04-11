@@ -4,8 +4,11 @@ import org.bautista.ag.api.Background;
 import org.bautista.ag.api.Environment;
 import org.bautista.ag.api.locatable.Dimension;
 import org.bautista.ag.api.locatable.Position;
+import org.bautista.ag.api.physics.Gravity;
+import org.bautista.ag.api.physics.Ricochet;
 
 import javafx.application.Application;
+import javafx.scene.Group;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
@@ -17,17 +20,16 @@ public class Test extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		Background background = new Background(new Dimension(800, 800));
-		Environment env = new Environment(background);
+		Background background = new Background(new Group(), new Dimension(800, 800));
+		Environment env = new Environment.Builder(background, new Gravity()).infinite(true)
+				.ricochet(new Ricochet(Ricochet.MINIMAL_INCREASE, true)).build();
+		env.initialize();
 
 		LLama spr = new LLama(new Image(getClass().getResourceAsStream("picture.png")),
-				new Position(1, 1));
-		spr.setXVelocity(1);
+				new Position(100, 5));
+		spr.setXVelocity(0);
 		spr.setYVelocity(0);
 		env.add(spr);
-		//env.getGravity().setEnabled(false);
-
-		env.initialize();
 	}
 
 }

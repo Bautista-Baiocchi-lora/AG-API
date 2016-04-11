@@ -7,40 +7,37 @@ import org.bautista.ag.api.objects.GameObject;
 import org.bautista.ag.api.objects.SceneObject;
 import org.bautista.ag.api.objects.Sprite;
 import org.bautista.ag.api.physics.Gravity;
+import org.bautista.ag.api.physics.Ricochet;
 
 import javafx.animation.AnimationTimer;
-import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Environment extends Stage {
 
 	private static Environment instance;
 	private final Background background;
-	private Gravity gravity;
-	private final Scene scene;
-	private final Group root;
+	private final Gravity gravity;
+	private final boolean infinite;
+	private final Ricochet ricochet;
 	private final ArrayList<GameObject> gameObjects;
 	private final ArrayList<Sprite> sprites;
 	private final ArrayList<SceneObject> sceneObjects;
 
-	public Environment(Background background) {
+	private Environment(Builder builder) {
 		instance = this;
 		gameObjects = new ArrayList<GameObject>();
 		sprites = new ArrayList<Sprite>();
 		sceneObjects = new ArrayList<SceneObject>();
-		this.background = background;
-		this.gravity = new Gravity();
-		root = new Group();
-		scene = new Scene(root);
+		this.background = builder.background;
+		this.gravity = builder.gravity;
+		this.infinite = builder.infinite;
+		this.ricochet = builder.ricochet;
 
-		root.getChildren().add(background);
-		setScene(scene);
-		show();
-		initialize();
+		setScene(background);
 	}
 
 	public void initialize() {
+		show();
 		new AnimationTimer() {
 
 			@Override
@@ -69,12 +66,24 @@ public class Environment extends Stage {
 		}
 	}
 
+	public boolean isInfinite() {
+		return infinite;
+	}
+
 	public Dimension getBackgroundDimension() {
 		return background.getDimension();
 	}
 
-	public void setGravity(Gravity gravity) {
-		this.gravity = gravity;
+	public Ricochet getRicochet() {
+		return ricochet;
+	}
+
+	public boolean hasRicochet() {
+		return ricochet.isEnabled();
+	}
+
+	public boolean hasGravity() {
+		return gravity.isEnabled();
 	}
 
 	public Gravity getGravity() {
@@ -82,15 +91,54 @@ public class Environment extends Stage {
 	}
 
 	public void add(GameObject gameObject) {
+		if (gameObject instanceof Sprite) {
+			sprites.add((Sprite) gameObject);
+		} else if (gameObject instanceof SceneObject) {
+			sceneObjects.add((SceneObject) gameObject);
+		}
 		gameObjects.add(gameObject);
 	}
 
 	public void remove(GameObject gameObject) {
+		if (gameObject instanceof Sprite) {
+			sprites.remove((Sprite) gameObject);
+		} else if (gameObject instanceof SceneObject) {
+			sceneObjects.remove((SceneObject) gameObject);
+		}
 		gameObjects.remove(gameObject);
 	}
 
 	public static Environment getInstance() {
 		return instance;
+	}
+
+	public static class Builder {
+		private Ricochet ricochet;
+		private final Gravity gravity;
+		private final Background background;
+		private boolean infinite;
+
+		public Builder(Background background, Gravity gravity) {
+			this.background = background;
+			this.gravity = gravity;
+		}
+
+		public Builder infinite(boolean infinite) {
+			this.infinite = infinite;
+			return this;
+		}
+
+		public Builder ricochet(Ricochet ricochet) {
+			if (ricochet == null) {
+				ricochet = new Ricochet();
+			}
+			this.ricochet = ricochet;
+			return this;
+		}
+
+		public Environment build() {
+			return new Environment(this);
+		}
 	}
 
 }

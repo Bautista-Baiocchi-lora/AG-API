@@ -16,7 +16,7 @@ import javafx.scene.input.KeyEvent;
 public class LLama extends Sprite {
 
 	public LLama(Image image, Position position) {
-		super(image, position);
+		super(image, position, true);
 	}
 
 	@Override
