@@ -23,7 +23,7 @@ public class Test extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		Background background = new Background(new Group(), new Dimension(600, 600));
 		GameEngine.getInstance().createEnvironment(new Environment.Builder(background, new Gravity(), ScrollType.RIGHT)
-				.ricochet(new Ricochet(Ricochet.SLIGHT_DECREASE, true)).build());
+				.ricochet(new Ricochet(Ricochet.SLIGHT_DECREASE)).build());
 
 		Ball ball = new Ball(new Image(getClass().getResourceAsStream("picture.png")), new Position(100, 100));
 		ball.setXVelocity(3);

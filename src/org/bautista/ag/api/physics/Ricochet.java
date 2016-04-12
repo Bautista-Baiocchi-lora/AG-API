@@ -1,15 +1,13 @@
 package org.bautista.ag.api.physics;
 
 public class Ricochet {
-	private final boolean enabled;
 	private final double velocityChange;
 	public static final double NONE = 0;
 	public static final double SLIGHT_DECREASE = -1;
 	public static final double SLIGHT_INCREASE = 1;
 
-	public Ricochet(double velocityChange, boolean enabled) {
+	public Ricochet(double velocityChange) {
 		this.velocityChange = velocityChange;
-		this.enabled = enabled;
 	}
 
 	public double applyRicochet(double velocity) {
@@ -25,11 +23,11 @@ public class Ricochet {
 	}
 
 	public Ricochet() {
-		this(0, false);
+		this(0);
 	}
 
 	public boolean isEnabled() {
-		return enabled && velocityChange != 0;
+		return velocityChange != 0;
 	}
 
 	public double getVelocityChange() {
