@@ -26,7 +26,7 @@ public class Test extends Application {
 				.ricochet(new Ricochet(Ricochet.SLIGHT_DECREASE)).build());
 
 		Ball ball = new Ball(new Image(getClass().getResourceAsStream("picture.png")), new Position(100, 100));
-		ball.setXVelocity(3);
+		ball.setXVelocity(-3);
 		ball.setYVelocity(10);
 		GameEngine.getInstance().add(ball);
 	}

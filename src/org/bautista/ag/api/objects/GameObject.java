@@ -1,6 +1,7 @@
 package org.bautista.ag.api.objects;
 
 import org.bautista.ag.api.GameEngine;
+import org.bautista.ag.api.background.scroll.ScrollDirection;
 import org.bautista.ag.api.locatable.Position;
 
 import javafx.geometry.Rectangle2D;
@@ -27,23 +28,40 @@ public abstract class GameObject extends ImageView {
 			// hit right
 			if (!GameEngine.getInstance().getBackground().getDimension().contains((getBoundary().getMaxX() + xVelocity),
 					getY())) {
-				xVelocity = GameEngine.getInstance().getEnvironment().hasRicochet()
-						? GameEngine.getInstance().getEnvironment().getRicochet().applyRicochet(-1 * xVelocity) : 0;
+				if (!GameEngine.getInstance().getEnvironment().getScrollType()
+						.isValidDirection(ScrollDirection.RIGHT)) {
+					xVelocity = GameEngine.getInstance().getEnvironment().hasRicochet()
+							? GameEngine.getInstance().getEnvironment().getRicochet().applyRicochet(-1 * xVelocity) : 0;
+				} else {
+					// request scroll
+				}
 				// hit left
 			} else if (!GameEngine.getInstance().getBackground().getDimension().contains((getX() + xVelocity),
 					getY())) {
-				xVelocity = GameEngine.getInstance().getEnvironment().hasRicochet()
-						? GameEngine.getInstance().getEnvironment().getRicochet().applyRicochet(-1 * xVelocity) : 0;
+				if (!GameEngine.getInstance().getEnvironment().getScrollType().isValidDirection(ScrollDirection.LEFT)) {
+					xVelocity = GameEngine.getInstance().getEnvironment().hasRicochet()
+							? GameEngine.getInstance().getEnvironment().getRicochet().applyRicochet(-1 * xVelocity) : 0;
+				} else {
+					// request scroll
+				}
 				// hit bottom
 			} else if (!GameEngine.getInstance().getBackground().getDimension().contains(getX(),
 					getBoundary().getMaxY() - yVelocity)) {
-				yVelocity = GameEngine.getInstance().getEnvironment().hasRicochet()
-						? GameEngine.getInstance().getEnvironment().getRicochet().applyRicochet(-1 * yVelocity) : 0;
+				if (!GameEngine.getInstance().getEnvironment().getScrollType().isValidDirection(ScrollDirection.DOWN)) {
+					yVelocity = GameEngine.getInstance().getEnvironment().hasRicochet()
+							? GameEngine.getInstance().getEnvironment().getRicochet().applyRicochet(-1 * yVelocity) : 0;
+				} else {
+					// request scroll
+				}
 				// hit top
 			} else if (!GameEngine.getInstance().getBackground().getDimension().contains(getX(),
 					(getY() - yVelocity))) {
-				yVelocity = GameEngine.getInstance().getEnvironment().hasRicochet()
-						? GameEngine.getInstance().getEnvironment().getRicochet().applyRicochet(-1 * yVelocity) : 0;
+				if (!GameEngine.getInstance().getEnvironment().getScrollType().isValidDirection(ScrollDirection.UP)) {
+					yVelocity = GameEngine.getInstance().getEnvironment().hasRicochet()
+							? GameEngine.getInstance().getEnvironment().getRicochet().applyRicochet(-1 * yVelocity) : 0;
+				} else {
+					// request scroll
+				}
 			}
 			reposition((getX() + xVelocity), (getY() - yVelocity));
 		}
