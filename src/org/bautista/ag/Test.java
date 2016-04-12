@@ -8,7 +8,6 @@ import org.bautista.ag.api.locatable.Dimension;
 import org.bautista.ag.api.locatable.Position;
 import org.bautista.ag.api.physics.Gravity;
 import org.bautista.ag.api.physics.Ricochet;
-
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.image.Image;

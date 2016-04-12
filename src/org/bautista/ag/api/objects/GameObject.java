@@ -24,15 +24,14 @@ public abstract class GameObject extends ImageView {
 
 	private void updateLocation() {
 		if (movable) {
-			double nextY = (getY() - yVelocity);
-			double nextX = (getX() + xVelocity);
 			// hit right
 			if (!GameEngine.getInstance().getBackground().getDimension().contains((getBoundary().getMaxX() + xVelocity),
 					getY())) {
 				xVelocity = GameEngine.getInstance().getEnvironment().hasRicochet()
 						? GameEngine.getInstance().getEnvironment().getRicochet().applyRicochet(-1 * xVelocity) : 0;
 				// hit left
-			} else if (!GameEngine.getInstance().getBackground().getDimension().contains(nextX, getY())) {
+			} else if (!GameEngine.getInstance().getBackground().getDimension().contains((getX() + xVelocity),
+					getY())) {
 				xVelocity = GameEngine.getInstance().getEnvironment().hasRicochet()
 						? GameEngine.getInstance().getEnvironment().getRicochet().applyRicochet(-1 * xVelocity) : 0;
 				// hit bottom
@@ -41,7 +40,8 @@ public abstract class GameObject extends ImageView {
 				yVelocity = GameEngine.getInstance().getEnvironment().hasRicochet()
 						? GameEngine.getInstance().getEnvironment().getRicochet().applyRicochet(-1 * yVelocity) : 0;
 				// hit top
-			} else if (!GameEngine.getInstance().getBackground().getDimension().contains(getX(), nextY)) {
+			} else if (!GameEngine.getInstance().getBackground().getDimension().contains(getX(),
+					(getY() - yVelocity))) {
 				yVelocity = GameEngine.getInstance().getEnvironment().hasRicochet()
 						? GameEngine.getInstance().getEnvironment().getRicochet().applyRicochet(-1 * yVelocity) : 0;
 			}

@@ -22,11 +22,13 @@ public class Environment extends Stage {
 	private final ArrayList<GameObject> gameObjects;
 	private final ArrayList<Sprite> sprites;
 	private final ArrayList<SceneObject> sceneObjects;
+	private final ArrayList<GameObject> unrenderedGameObjects;
 
 	private Environment(Builder builder) {
 		gameObjects = new ArrayList<GameObject>();
 		sprites = new ArrayList<Sprite>();
 		sceneObjects = new ArrayList<SceneObject>();
+		unrenderedGameObjects = new ArrayList<GameObject>();
 		this.background = builder.background;
 		this.gravity = builder.gravity;
 		this.scrollType = builder.scrollType;
@@ -46,7 +48,10 @@ public class Environment extends Stage {
 				}
 				// scroll here
 				updateObjects();
-				background.renderGraphics(gameObjects);
+				if (!unrenderedGameObjects.isEmpty()) {
+					background.renderGraphics(unrenderedGameObjects);
+					unrenderedGameObjects.clear();
+				}
 			}
 
 		}.start();
@@ -101,13 +106,14 @@ public class Environment extends Stage {
 			sceneObjects.add((SceneObject) gameObject);
 		}
 		gameObjects.add(gameObject);
+		unrenderedGameObjects.add(gameObject);
 	}
 
 	protected void remove(GameObject gameObject) {
 		if (gameObject instanceof Sprite) {
-			sprites.remove((Sprite) gameObject);
+			sprites.remove(gameObject);
 		} else if (gameObject instanceof SceneObject) {
-			sceneObjects.remove((SceneObject) gameObject);
+			sceneObjects.remove(gameObject);
 		}
 		gameObjects.remove(gameObject);
 	}
