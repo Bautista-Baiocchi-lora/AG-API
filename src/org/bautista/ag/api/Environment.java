@@ -1,10 +1,12 @@
 package org.bautista.ag.api;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.bautista.ag.api.background.Background;
 import org.bautista.ag.api.background.scroll.ScrollDirection;
 import org.bautista.ag.api.background.scroll.ScrollType;
+import org.bautista.ag.api.locatable.collisions.Collision;
 import org.bautista.ag.api.objects.GameObject;
 import org.bautista.ag.api.objects.SceneObject;
 import org.bautista.ag.api.objects.Sprite;
@@ -58,8 +60,19 @@ public class Environment extends Stage {
 		}.start();
 	}
 
+	private ArrayList<Collision> getCollisions(GameObject gameObject) {
+		ArrayList<Collision> collisions = new ArrayList<Collision>();
+		for (GameObject object : gameObjects) {
+			if (object.intersects(gameObject)) {
+				collisions.add(new Collision(object, gameObject.getCollisionFlag(object)));
+			}
+		}
+		return collisions;
+	}
+
 	private void updateObjects() {
 		for (GameObject object : gameObjects) {
+			ArrayList<Collision> collisions = getCollisions(object);
 			// hit right
 			if (!background.getDimension().contains((object.getBoundary().getMaxX() + object.getXVelocity()),
 					object.getY())) {

@@ -2,6 +2,7 @@ package org.bautista.ag.api.objects;
 
 import org.bautista.ag.api.GameEngine;
 import org.bautista.ag.api.locatable.Position;
+import org.bautista.ag.api.locatable.collisions.CollisionFlag;
 
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
@@ -73,6 +74,17 @@ public abstract class GameObject extends ImageView {
 
 	public Rectangle2D getBoundary() {
 		return new Rectangle2D(getX(), getY(), image.getWidth(), image.getHeight());
+	}
+
+	public CollisionFlag getCollisionFlag(GameObject gameObject) {
+		if (!gameObject.intersects(this)) {
+			return null;
+		} else if (this.getBoundary().contains(gameObject.getX(), this.getY())) {
+			System.out.println("hit top of object");
+		} else if (this.getBoundary().contains(this.getX(), gameObject.getY())) {
+			// intersects in the y axis
+		}
+		return null;
 	}
 
 	public boolean intersects(GameObject gameObject) {
