@@ -14,11 +14,13 @@ public abstract class GameObject extends ImageView {
 	private final boolean movable;
 	private double xVelocity;
 	private double yVelocity;
+	private Position position;
 
 	public GameObject(Image image, Position position, boolean movable) {
 		super(image);
 		this.image = image;
 		this.movable = movable;
+		this.position = position;
 		setX(position.getX());
 		setY(position.getY());
 	}
@@ -63,17 +65,18 @@ public abstract class GameObject extends ImageView {
 					// request scroll
 				}
 			}
-			reposition((getX() + xVelocity), (getY() - yVelocity));
+			reposition((getX() + xVelocity), (getY() - yVelocity), position.getZ());
 		}
 	}
 
-	public void reposition(double x, double y) {
-		setX(x);
-		setY(y);
+	public void reposition(double x, double y, double z) {
+		reposition(new Position(x, y, z));
 	}
 
 	public void reposition(Position position) {
-		reposition(position.getX(), position.getY());
+		this.position = position;
+		setX(position.getX());
+		setY(position.getY());
 	}
 
 	public boolean isMovable() {
@@ -113,7 +116,8 @@ public abstract class GameObject extends ImageView {
 	}
 
 	public boolean intersects(GameObject gameObject) {
-		return gameObject.getBoundary().intersects(this.getBoundary());
+		return gameObject.getBoundary().intersects(this.getBoundary())
+				&& gameObject.getPosition().getZ() == this.getPosition().getZ();
 	}
 
 	public void update() {

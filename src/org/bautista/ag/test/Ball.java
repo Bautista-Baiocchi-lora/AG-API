@@ -1,4 +1,4 @@
-package org.bautista.ag;
+package org.bautista.ag.test;
 
 import org.bautista.ag.api.locatable.Position;
 import org.bautista.ag.api.objects.Sprite;
