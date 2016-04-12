@@ -3,9 +3,7 @@ package org.bautista.ag.api;
 import java.util.ArrayList;
 
 import org.bautista.ag.api.background.Background;
-import org.bautista.ag.api.background.scroll.ScrollDirection;
 import org.bautista.ag.api.background.scroll.ScrollType;
-import org.bautista.ag.api.locatable.Dimension;
 import org.bautista.ag.api.objects.GameObject;
 import org.bautista.ag.api.objects.SceneObject;
 import org.bautista.ag.api.objects.Sprite;
@@ -17,7 +15,6 @@ import javafx.stage.Stage;
 
 public class Environment extends Stage {
 
-	private static Environment instance;
 	private final Background background;
 	private final Gravity gravity;
 	private final ScrollType scrollType;
@@ -25,11 +22,8 @@ public class Environment extends Stage {
 	private final ArrayList<GameObject> gameObjects;
 	private final ArrayList<Sprite> sprites;
 	private final ArrayList<SceneObject> sceneObjects;
-	private boolean scrollRequested;
-	private ScrollDirection scrollDirection;
 
 	private Environment(Builder builder) {
-		instance = this;
 		gameObjects = new ArrayList<GameObject>();
 		sprites = new ArrayList<Sprite>();
 		sceneObjects = new ArrayList<SceneObject>();
@@ -41,7 +35,7 @@ public class Environment extends Stage {
 		setScene(background);
 	}
 
-	public void initialize() {
+	protected void initialize() {
 		show();
 		new AnimationTimer() {
 
@@ -50,9 +44,7 @@ public class Environment extends Stage {
 				if (gravity.isEnabled()) {
 					simulateGravity();
 				}
-				if (scrollRequested) {
-					scroll(scrollDirection);
-				}
+				// scroll here
 				updateObjects();
 				background.renderGraphics(gameObjects);
 			}
@@ -74,29 +66,8 @@ public class Environment extends Stage {
 		}
 	}
 
-	private void scroll(ScrollDirection direction) {
-		for (GameObject object : gameObjects) {
-			switch (direction.getIndex()) {
-			case 0:
-				object.reposition((object.getX() + direction.getShift()), object.getY(), true);
-				break;
-			case 1:
-				object.reposition((object.getX() + direction.getShift()), object.getY(), true);
-				break;
-			case 2:
-				object.reposition(object.getX(), (object.getY() + direction.getShift()), true);
-				break;
-			case 3:
-				object.reposition(object.getX(), (object.getY() + direction.getShift()), true);
-				break;
-			}
-		}
-		scrollDirection = null;
-		scrollRequested = false;
-	}
-
-	public Dimension getBackgroundDimension() {
-		return background.getDimension();
+	protected Background getBackground() {
+		return background;
 	}
 
 	public Ricochet getRicochet() {
@@ -123,14 +94,7 @@ public class Environment extends Stage {
 		return scrollType;
 	}
 
-	public void requestScroll(ScrollDirection direction) {
-		if (scrollType.isValidDirection(direction)) {
-			scrollRequested = true;
-			scrollDirection = direction;
-		}
-	}
-
-	public void add(GameObject gameObject) {
+	protected void add(GameObject gameObject) {
 		if (gameObject instanceof Sprite) {
 			sprites.add((Sprite) gameObject);
 		} else if (gameObject instanceof SceneObject) {
@@ -139,17 +103,13 @@ public class Environment extends Stage {
 		gameObjects.add(gameObject);
 	}
 
-	public void remove(GameObject gameObject) {
+	protected void remove(GameObject gameObject) {
 		if (gameObject instanceof Sprite) {
 			sprites.remove((Sprite) gameObject);
 		} else if (gameObject instanceof SceneObject) {
 			sceneObjects.remove((SceneObject) gameObject);
 		}
 		gameObjects.remove(gameObject);
-	}
-
-	public static Environment getInstance() {
-		return instance;
 	}
 
 	public static class Builder {

@@ -1,6 +1,6 @@
 package org.bautista.ag.api.objects;
 
-import org.bautista.ag.api.Environment;
+import org.bautista.ag.api.GameEngine;
 import org.bautista.ag.api.locatable.Position;
 
 import javafx.geometry.Rectangle2D;
@@ -27,40 +27,35 @@ public abstract class GameObject extends ImageView {
 			double nextY = (getY() - yVelocity);
 			double nextX = (getX() + xVelocity);
 			// hit right
-			if (!Environment.getInstance().getBackgroundDimension().contains((getBoundary().getMaxX() + xVelocity),
+			if (!GameEngine.getInstance().getBackground().getDimension().contains((getBoundary().getMaxX() + xVelocity),
 					getY())) {
-				xVelocity = Environment.getInstance().hasRicochet()
-						? Environment.getInstance().getRicochet().applyRicochet(-1 * xVelocity) : 0;
+				xVelocity = GameEngine.getInstance().getEnvironment().hasRicochet()
+						? GameEngine.getInstance().getEnvironment().getRicochet().applyRicochet(-1 * xVelocity) : 0;
 				// hit left
-			} else if (!Environment.getInstance().getBackgroundDimension().contains(nextX, getY())) {
-				xVelocity = Environment.getInstance().hasRicochet()
-						? Environment.getInstance().getRicochet().applyRicochet(-1 * xVelocity) : 0;
+			} else if (!GameEngine.getInstance().getBackground().getDimension().contains(nextX, getY())) {
+				xVelocity = GameEngine.getInstance().getEnvironment().hasRicochet()
+						? GameEngine.getInstance().getEnvironment().getRicochet().applyRicochet(-1 * xVelocity) : 0;
 				// hit bottom
-			} else if (!Environment.getInstance().getBackgroundDimension().contains(getX(),
+			} else if (!GameEngine.getInstance().getBackground().getDimension().contains(getX(),
 					getBoundary().getMaxY() - yVelocity)) {
-				yVelocity = Environment.getInstance().hasRicochet()
-						? Environment.getInstance().getRicochet().applyRicochet(-1 * yVelocity) : 0;
+				yVelocity = GameEngine.getInstance().getEnvironment().hasRicochet()
+						? GameEngine.getInstance().getEnvironment().getRicochet().applyRicochet(-1 * yVelocity) : 0;
 				// hit top
-			} else if (!Environment.getInstance().getBackgroundDimension().contains(getX(), nextY)) {
-				yVelocity = Environment.getInstance().hasRicochet()
-						? Environment.getInstance().getRicochet().applyRicochet(-1 * yVelocity) : 0;
+			} else if (!GameEngine.getInstance().getBackground().getDimension().contains(getX(), nextY)) {
+				yVelocity = GameEngine.getInstance().getEnvironment().hasRicochet()
+						? GameEngine.getInstance().getEnvironment().getRicochet().applyRicochet(-1 * yVelocity) : 0;
 			}
-			reposition((getX() + xVelocity), (getY() - yVelocity), false);
+			reposition((getX() + xVelocity), (getY() - yVelocity));
 		}
 	}
 
-	public void reposition(double x, double y, boolean scroll) {
-		if (!scroll) {
-			setX(x);
-			setY(y);
-		} else if (Environment.getInstance().getBackgroundDimension().contains(x, y)) {
-			setX(x);
-			setY(y);
-		}
+	public void reposition(double x, double y) {
+		setX(x);
+		setY(y);
 	}
 
-	public void reposition(Position position, boolean scroll) {
-		reposition(position.getX(), position.getY(), scroll);
+	public void reposition(Position position) {
+		reposition(position.getX(), position.getY());
 	}
 
 	public boolean isMovable() {
@@ -92,7 +87,7 @@ public abstract class GameObject extends ImageView {
 	}
 
 	public boolean isElevated() {
-		return getBoundary().getMaxY() < Environment.getInstance().getBackgroundDimension().getHeight();
+		return getBoundary().getMaxY() < GameEngine.getInstance().getBackground().getHeight();
 	}
 
 	public Rectangle2D getBoundary() {
