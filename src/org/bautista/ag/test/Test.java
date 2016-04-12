@@ -29,9 +29,9 @@ public class Test extends Application {
 		Ball ball = new Ball(new Image(getClass().getResourceAsStream("picture.png")), new Position(100, 100));
 		ball.setXVelocity(-3);
 		ball.setYVelocity(10);
-		
-		Square square = new Square(new Image(getClass().getResourceAsStream("square.png")), new Position(100,300));
-		
+
+		Square square = new Square(new Image(getClass().getResourceAsStream("square.png")), new Position(100, 300));
+
 		GameEngine.getInstance().add(square);
 		GameEngine.getInstance().add(ball);
 	}

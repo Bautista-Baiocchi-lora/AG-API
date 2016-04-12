@@ -3,6 +3,7 @@ package org.bautista.ag.api;
 import java.util.ArrayList;
 
 import org.bautista.ag.api.background.Background;
+import org.bautista.ag.api.background.scroll.ScrollDirection;
 import org.bautista.ag.api.background.scroll.ScrollType;
 import org.bautista.ag.api.objects.GameObject;
 import org.bautista.ag.api.objects.SceneObject;
@@ -59,6 +60,37 @@ public class Environment extends Stage {
 
 	private void updateObjects() {
 		for (GameObject object : gameObjects) {
+			// hit right
+			if (!background.getDimension().contains((object.getBoundary().getMaxX() + object.getXVelocity()),
+					object.getY())) {
+				if (!scrollType.isValidDirection(ScrollDirection.RIGHT)) {
+					object.setXVelocity(ricochet.isEnabled() ? ricochet.applyRicochet(-1 * object.getXVelocity()) : 0);
+				} else {
+					// request scroll
+				}
+				// hit left
+			} else if (!background.getDimension().contains((object.getX() + object.getXVelocity()), object.getY())) {
+				if (!scrollType.isValidDirection(ScrollDirection.LEFT)) {
+					object.setXVelocity(ricochet.isEnabled() ? ricochet.applyRicochet(-1 * object.getXVelocity()) : 0);
+				} else {
+					// request scroll
+				}
+				// hit bottom
+			} else if (!background.getDimension().contains(object.getX(),
+					object.getBoundary().getMaxY() - object.getYVelocity())) {
+				if (!scrollType.isValidDirection(ScrollDirection.DOWN)) {
+					object.setYVelocity(ricochet.isEnabled() ? ricochet.applyRicochet(-1 * object.getYVelocity()) : 0);
+				} else {
+					// request scroll
+				}
+				// hit top
+			} else if (!background.getDimension().contains(object.getX(), (object.getY() - object.getYVelocity()))) {
+				if (!GameEngine.getInstance().getEnvironment().getScrollType().isValidDirection(ScrollDirection.UP)) {
+					object.setYVelocity(ricochet.isEnabled() ? ricochet.applyRicochet(-1 * object.getYVelocity()) : 0);
+				} else {
+					// request scroll
+				}
+			}
 			object.update();
 		}
 	}
