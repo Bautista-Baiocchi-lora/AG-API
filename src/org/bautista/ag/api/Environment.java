@@ -85,11 +85,9 @@ public class Environment extends Stage {
 			@Override
 			public void handle(final long now) {
 				if (gravity.isEnabled()) {
-					simulateGravity();
+					applyGravity();
 				}
-				if (ricochet.isEnabled()) {
-					simulateRicochet();
-				}
+				moveObjects();
 				// scroll here
 				updateObjects();
 				if (!unrenderedGameObjects.isEmpty()) {
@@ -110,7 +108,7 @@ public class Environment extends Stage {
 		gameObjects.remove(gameObject);
 	}
 
-	private void simulateGravity() {
+	private void applyGravity() {
 		for (final GameObject object : sprites) {
 			if (object.isElevated() && object.isMovable()) {
 				object.setYVelocity(object.getYVelocity() + gravity.getVelocity());
@@ -118,7 +116,7 @@ public class Environment extends Stage {
 		}
 	}
 
-	private void simulateRicochet() {
+	private void moveObjects() {
 		for (GameObject object : gameObjects) {
 			CollisionFlag side = object.getCollisionFlag(gameObjects);
 			if (side != CollisionFlag.NONE && object.isMovable()) {
