@@ -3,6 +3,7 @@ package org.bautista.ag.api.objects;
 import java.util.ArrayList;
 
 import org.bautista.ag.api.GameEngine;
+import org.bautista.ag.api.locatable.Boundary;
 import org.bautista.ag.api.locatable.CollisionFlag;
 import org.bautista.ag.api.locatable.Position;
 
@@ -26,33 +27,22 @@ public abstract class GameObject extends ImageView {
 		reposition(position);
 	}
 
-	public Rectangle2D getBoundary() {
-		return new Rectangle2D(getX(), getY(), image.getWidth(), image.getHeight());
+	public Boundary getBoundary() {
+		return new Boundary(getX(), getY(), image.getWidth(), image.getHeight());
 	}
 
-	public CollisionFlag getCollisionFlag(ArrayList<GameObject> objects) {
-		GameObject collided = null;
-		for (GameObject object : objects) {
-			if (object != this && object.intersects(this)) {
-				collided = object;
+	public CollisionFlag getCollisionFlag(ArrayList<Boundary> boundaries) {
+		Boundary collidedBoundary = null;
+		for (Boundary boundary : boundaries) {
+			if (boundary != this.getBoundary() && boundary.intersects(this.getBoundary())) {
+				collidedBoundary = boundary;
 				break;
 			}
 		}
-		if (collided == null) {
+		if (collidedBoundary == null) {
 			return CollisionFlag.NONE;
-		} else if ((getY() < collided.getY() || getBoundary().getMaxY() > collided.getY())
-				&& getX() < collided.getX()) {
-			return CollisionFlag.EAST;
-		} else if (getBoundary().getMaxX() > collided.getBoundary().getMaxX()
-				&& (collided.getY() < getBoundary().getMaxY() || getY() < collided.getY())) {
-			return CollisionFlag.WEST;
-		} else if (getBoundary().getMaxY() > collided.getBoundary().getMaxY()
-				&& (getX() < collided.getX() || getBoundary().getMaxX() > collided.getX())) {
-			return CollisionFlag.NORTH;
-		} else if (getY() < collided.getY()
-				&& (getX() < collided.getX() || getBoundary().getMaxX() > collided.getX())) {
-			return CollisionFlag.SOUTH;
-		}
+		} 
+		System.out.println("hit");
 		return CollisionFlag.NONE;
 	}
 

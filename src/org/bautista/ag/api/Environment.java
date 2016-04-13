@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.bautista.ag.api.background.Background;
 import org.bautista.ag.api.background.scroll.ScrollDirection;
 import org.bautista.ag.api.background.scroll.ScrollType;
+import org.bautista.ag.api.locatable.Boundary;
 import org.bautista.ag.api.locatable.CollisionFlag;
 import org.bautista.ag.api.objects.GameObject;
 import org.bautista.ag.api.objects.SceneObject;
@@ -13,6 +14,7 @@ import org.bautista.ag.api.physics.Gravity;
 import org.bautista.ag.api.physics.Ricochet;
 
 import javafx.animation.AnimationTimer;
+import javafx.geometry.Rectangle2D;
 import javafx.stage.Stage;
 
 public class Environment extends Stage {
@@ -24,18 +26,21 @@ public class Environment extends Stage {
 	private final ArrayList<GameObject> gameObjects;
 	private final ArrayList<Sprite> sprites;
 	private final ArrayList<SceneObject> sceneObjects;
-
+	private final ArrayList<Boundary> collisionBoundaries;
 	private final ArrayList<GameObject> unrenderedGameObjects;
 
 	private Environment(final Builder builder) {
 		gameObjects = new ArrayList<GameObject>();
 		sprites = new ArrayList<Sprite>();
 		sceneObjects = new ArrayList<SceneObject>();
+		collisionBoundaries = new ArrayList<Boundary>();
 		unrenderedGameObjects = new ArrayList<GameObject>();
 		background = builder.background;
 		gravity = builder.gravity;
 		scrollType = builder.scrollType;
 		ricochet = builder.ricochet;
+		collisionBoundaries.add(
+				new Boundary(background.getX(), background.getY(), background.getWidth(), background.getHeight()));
 
 		setScene(background);
 	}
@@ -46,6 +51,7 @@ public class Environment extends Stage {
 		} else if (gameObject instanceof SceneObject) {
 			sceneObjects.add((SceneObject) gameObject);
 		}
+		collisionBoundaries.add(gameObject.getBoundary());
 		gameObjects.add(gameObject);
 		unrenderedGameObjects.add(gameObject);
 	}
@@ -104,6 +110,7 @@ public class Environment extends Stage {
 		} else if (gameObject instanceof SceneObject) {
 			sceneObjects.remove(gameObject);
 		}
+		collisionBoundaries.remove(gameObject.getBoundary());
 		gameObjects.remove(gameObject);
 	}
 
@@ -117,8 +124,8 @@ public class Environment extends Stage {
 
 	private void moveSprites() {
 		for (GameObject object : sprites) {
-			//gets the direction of the collision on the object
-			CollisionFlag side = object.getCollisionFlag(gameObjects);
+			// gets the direction of the collision on the object
+			CollisionFlag side = object.getCollisionFlag(collisionBoundaries);
 			if (side != CollisionFlag.NONE && object.isMovable()) {
 				switch (side) {
 				case EAST:
