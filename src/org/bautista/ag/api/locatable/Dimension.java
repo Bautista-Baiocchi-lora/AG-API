@@ -17,7 +17,7 @@ public class Dimension {
 	}
 
 	public boolean contains(final double x, final double y, final double buffer) {
-		return (x < (width + buffer)) && (x > (1 + buffer)) && (y < (height + buffer)) && (y > (1 + buffer));
+		return (x <= (width + buffer)) && (x >= (1 + buffer)) && (y <= (height + buffer)) && (y >= (1 + buffer));
 	}
 
 	public boolean contains(final GameObject gameObject) {

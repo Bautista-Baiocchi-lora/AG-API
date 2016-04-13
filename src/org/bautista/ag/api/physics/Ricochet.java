@@ -1,13 +1,13 @@
 package org.bautista.ag.api.physics;
 
 public class Ricochet {
-	public static final double NONE = 0;
-	public static final double SLIGHT_DECREASE = -0.3;
-	public static final double SLIGHT_INCREASE = 0.3;
+	public static final double NONE = 1;
+	public static final double SLIGHT_DECREASE = 0.90;
+	public static final double SLIGHT_INCREASE = 1.1;
 	private final double velocityChange;
 
 	public Ricochet() {
-		this(0);
+		this(1);
 	}
 
 	public Ricochet(final double velocityChange) {
@@ -15,15 +15,11 @@ public class Ricochet {
 	}
 
 	public double applyRicochet(final double velocity) {
-		if (velocityChange < 0) {
-			if (velocity < 0 ? (velocity - velocityChange) > 0 : (velocity + velocityChange) < 0) {
-				return 0;
-			}
-			return velocity < 0 ? (velocity - velocityChange) : (velocity + velocityChange);
-		} else if (velocityChange > 0) {
-			return velocity < 0 ? (velocity - velocityChange) : (velocity + velocityChange);
+		double newVelocity = velocity * velocityChange;
+		if (velocityChange < 1 && (newVelocity < 0 && newVelocity >= -0.9) || (newVelocity > 0 && newVelocity <= 0.9)) {
+			return 0;
 		}
-		return 0;
+		return newVelocity;
 	}
 
 	public double getVelocityChange() {
@@ -31,6 +27,6 @@ public class Ricochet {
 	}
 
 	public boolean isEnabled() {
-		return velocityChange != 0;
+		return velocityChange != 1;
 	}
 }

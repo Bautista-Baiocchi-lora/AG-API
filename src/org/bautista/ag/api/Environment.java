@@ -87,8 +87,7 @@ public class Environment extends Stage {
 				if (gravity.isEnabled()) {
 					applyGravity();
 				}
-				moveObjects();
-				// scroll here
+				moveSprites();
 				updateObjects();
 				if (!unrenderedGameObjects.isEmpty()) {
 					background.renderGraphics(unrenderedGameObjects);
@@ -116,58 +115,24 @@ public class Environment extends Stage {
 		}
 	}
 
-	private void moveObjects() {
-		for (GameObject object : gameObjects) {
+	private void moveSprites() {
+		for (GameObject object : sprites) {
+			//gets the direction of the collision on the object
 			CollisionFlag side = object.getCollisionFlag(gameObjects);
 			if (side != CollisionFlag.NONE && object.isMovable()) {
-				if (object.isMovable()) {
-					System.out.println(side.toString());
-					System.out.println("V-X: " + object.getXVelocity() + ", V-Y: " + object.getYVelocity());
-				}
 				switch (side) {
-					case EAST:
-						object.setXVelocity(ricochet.applyRicochet(-1 * object.getXVelocity()));
-						break;
-					case WEST:
-						object.setXVelocity(ricochet.applyRicochet(-1 * object.getXVelocity()));
-						break;
-					case NORTH:
-						object.setYVelocity(ricochet.applyRicochet(-1 * object.getYVelocity()));
-						break;
-					case SOUTH:
-						object.setYVelocity(ricochet.applyRicochet(-1 * object.getYVelocity()));
-						break;
-				}
-			}
-			// hit right
-			if (!background.getDimension().contains((object.getBoundary().getMaxX() + object.getXVelocity()),
-					object.getY())) {
-				if (!scrollType.isValidDirection(ScrollDirection.RIGHT)) {
+				case EAST:
 					object.setXVelocity(ricochet.applyRicochet(-1 * object.getXVelocity()));
-				} else {
-					// request scroll
-				}
-				// hit left
-			} else if (!background.getDimension().contains((object.getX() + object.getXVelocity()), object.getY())) {
-				if (!scrollType.isValidDirection(ScrollDirection.LEFT)) {
+					break;
+				case WEST:
 					object.setXVelocity(ricochet.applyRicochet(-1 * object.getXVelocity()));
-				} else {
-					// request scroll
-				}
-				// hit bottom
-			} else if (!background.getDimension().contains(object.getX(),
-					object.getBoundary().getMaxY() - object.getYVelocity())) {
-				if (!scrollType.isValidDirection(ScrollDirection.DOWN)) {
+					break;
+				case NORTH:
 					object.setYVelocity(ricochet.applyRicochet(-1 * object.getYVelocity()));
-				} else {
-					// request scroll
-				}
-				// hit top
-			} else if (!background.getDimension().contains(object.getX(), (object.getY() - object.getYVelocity()))) {
-				if (!GameEngine.getInstance().getEnvironment().getScrollType().isValidDirection(ScrollDirection.UP)) {
+					break;
+				case SOUTH:
 					object.setYVelocity(ricochet.applyRicochet(-1 * object.getYVelocity()));
-				} else {
-					// request scroll
+					break;
 				}
 			}
 		}

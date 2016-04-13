@@ -26,11 +26,12 @@ public class Test extends Application {
 		GameEngine.getInstance().createEnvironment(new Environment.Builder(background, new Gravity(), ScrollType.NONE)
 				.ricochet(new Ricochet(Ricochet.SLIGHT_DECREASE)).build());
 
-		final Ball ball = new Ball(new Image(getClass().getResourceAsStream("picture.png")), new Position(20,20,0));
-		ball.setXVelocity(2);
+		final Ball ball = new Ball(new Image(getClass().getResourceAsStream("picture.png")), new Position(20, 20, 0));
+		ball.setXVelocity(5);
 		ball.setYVelocity(0);
 
-		final Square square = new Square(new Image(getClass().getResourceAsStream("square.png")), new Position(100, 300, 0));
+		final Square square = new Square(new Image(getClass().getResourceAsStream("square.png")),
+				new Position(200, 200, 0));
 
 		GameEngine.getInstance().add(square);
 		GameEngine.getInstance().add(ball);

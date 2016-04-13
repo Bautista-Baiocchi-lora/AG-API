@@ -40,17 +40,18 @@ public abstract class GameObject extends ImageView {
 		}
 		if (collided == null) {
 			return CollisionFlag.NONE;
-		} else if (getY() < collided.getY()
-				&& (getX() < collided.getX() || getBoundary().getMaxX() > collided.getX())) {
-			return CollisionFlag.SOUTH;
-		} else if ((getY() < collided.getY() || getBoundary().getMaxY() > collided.getY()) && getX() < collided.getX()) {
+		} else if ((getY() < collided.getY() || getBoundary().getMaxY() > collided.getY())
+				&& getX() < collided.getX()) {
 			return CollisionFlag.EAST;
-		} else if (getY() > collided.getBoundary().getMaxY()
-				&& (getX() < collided.getX() || getBoundary().getMaxX() > collided.getX())) {
-			return CollisionFlag.NORTH;
 		} else if (getBoundary().getMaxX() > collided.getBoundary().getMaxX()
 				&& (collided.getY() < getBoundary().getMaxY() || getY() < collided.getY())) {
 			return CollisionFlag.WEST;
+		} else if (getBoundary().getMaxY() > collided.getBoundary().getMaxY()
+				&& (getX() < collided.getX() || getBoundary().getMaxX() > collided.getX())) {
+			return CollisionFlag.NORTH;
+		} else if (getY() < collided.getY()
+				&& (getX() < collided.getX() || getBoundary().getMaxX() > collided.getX())) {
+			return CollisionFlag.SOUTH;
 		}
 		return CollisionFlag.NONE;
 	}

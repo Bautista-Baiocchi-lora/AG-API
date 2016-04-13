@@ -2,7 +2,7 @@ package org.bautista.ag.api.background.scroll;
 
 public enum ScrollDirection {
 
-	RIGHT(-2.0, 0), LEFT(2.0, 1), UP(2.0, 2), DOWN(-2.0, 3), NONE(0, 4);
+	EAST(-2.0, 0), WEST(2.0, 1), NORTH(2.0, 2), SOUTH(-2.0, 3), NONE(0, 4);
 
 	private double shift;
 	private int index;

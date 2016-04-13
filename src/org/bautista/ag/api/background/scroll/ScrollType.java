@@ -2,10 +2,10 @@ package org.bautista.ag.api.background.scroll;
 
 public enum ScrollType {
 
-	RIGHT(ScrollDirection.RIGHT), LEFT(ScrollDirection.LEFT), UP(ScrollDirection.UP), DOWN(
-			ScrollDirection.DOWN), HORIZONTAL(ScrollDirection.RIGHT, ScrollDirection.LEFT), VERTICAL(ScrollDirection.UP,
-					ScrollDirection.DOWN), ANY(ScrollDirection.RIGHT, ScrollDirection.LEFT, ScrollDirection.UP,
-							ScrollDirection.DOWN), NONE(ScrollDirection.NONE);
+	EAST(ScrollDirection.EAST), WEST(ScrollDirection.WEST), NORTH(ScrollDirection.NORTH), SOUTH(
+			ScrollDirection.SOUTH), HORIZONTAL(ScrollDirection.EAST, ScrollDirection.WEST), VERTICAL(
+					ScrollDirection.NORTH, ScrollDirection.SOUTH), ANY(ScrollDirection.EAST, ScrollDirection.WEST,
+							ScrollDirection.NORTH, ScrollDirection.SOUTH), NONE(ScrollDirection.NONE);
 
 	private ScrollDirection[] directions;
 
