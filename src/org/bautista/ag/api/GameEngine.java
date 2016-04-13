@@ -5,35 +5,36 @@ import org.bautista.ag.api.objects.GameObject;
 
 public class GameEngine {
 	private static GameEngine instance;
+
+	public static GameEngine getInstance() {
+		return instance == null ? instance = new GameEngine() : instance;
+	}
+
 	private Environment environment;
 
 	private GameEngine() {
 
 	}
 
-	public void createEnvironment(Environment environment) {
-		this.environment = environment;
-		this.environment.initialize();
-	}
-
-	public void add(GameObject gameObject) {
+	public void add(final GameObject gameObject) {
 		environment.add(gameObject);
 	}
 
-	public void remove(GameObject gameObject) {
-		environment.remove(gameObject);
-	}
-
-	public Environment getEnvironment() {
-		return environment;
+	public void createEnvironment(final Environment environment) {
+		this.environment = environment;
+		this.environment.initialize();
 	}
 
 	public Background getBackground() {
 		return environment.getBackground();
 	}
 
-	public static GameEngine getInstance() {
-		return instance == null ? instance = new GameEngine() : instance;
+	public Environment getEnvironment() {
+		return environment;
+	}
+
+	public void remove(final GameObject gameObject) {
+		environment.remove(gameObject);
 	}
 
 }

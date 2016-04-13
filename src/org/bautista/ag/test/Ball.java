@@ -8,12 +8,12 @@ import javafx.scene.image.Image;
 
 public class Ball extends Sprite {
 
-	public Ball(Image image, Position position) {
+	public Ball(final Image image, final Position position) {
 		super(image, position, true);
 	}
 
 	@Override
-	public void handle(Event event) {
+	public void handle(final Event event) {
 		System.out.println(event.getEventType().getName());
 	}
 

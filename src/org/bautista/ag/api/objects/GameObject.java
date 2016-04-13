@@ -1,8 +1,10 @@
 package org.bautista.ag.api.objects;
 
+import java.util.ArrayList;
+
 import org.bautista.ag.api.GameEngine;
+import org.bautista.ag.api.locatable.CollisionFlag;
 import org.bautista.ag.api.locatable.Position;
-import org.bautista.ag.api.locatable.collisions.CollisionFlag;
 
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
@@ -10,13 +12,13 @@ import javafx.scene.image.ImageView;
 
 public abstract class GameObject extends ImageView {
 
-	private Image image;
+	private final Image image;
 	private final boolean movable;
 	private double xVelocity;
 	private double yVelocity;
 	private Position position;
 
-	public GameObject(Image image, Position position, boolean movable) {
+	public GameObject(final Image image, final Position position, final boolean movable) {
 		super(image);
 		this.image = image;
 		this.movable = movable;
@@ -24,32 +26,37 @@ public abstract class GameObject extends ImageView {
 		reposition(position);
 	}
 
-	private void updateLocation() {
-		if (movable) {
-			reposition((getX() + xVelocity), (getY() - yVelocity), position.getZ());
+	public Rectangle2D getBoundary() {
+		return new Rectangle2D(getX(), getY(), image.getWidth(), image.getHeight());
+	}
+
+	public CollisionFlag getCollisionFlag(ArrayList<GameObject> objects) {
+		GameObject collided = null;
+		for (GameObject object : objects) {
+			if (object != this && object.intersects(this)) {
+				collided = object;
+				break;
+			}
 		}
-	}
-
-	public void reposition(double x, double y, double z) {
-		reposition(new Position(x, y, z));
-	}
-
-	public void reposition(Position position) {
-		this.position = position;
-		setX(position.getX());
-		setY(position.getY());
-	}
-
-	public boolean isMovable() {
-		return movable;
+		if (collided == null) {
+			return CollisionFlag.NONE;
+		} else if (getY() < collided.getY()
+				&& (getBoundary().getMaxX() < collided.getX() || getBoundary().getMaxX() > collided.getX())) {
+			return CollisionFlag.SOUTH;
+		} else if (getBoundary().getMaxY() > collided.getBoundary().getMaxY()
+				&& (getX() < collided.getX() || getBoundary().getMaxX() > collided.getX())) {
+			return CollisionFlag.NORTH;
+		} else if ((getY() < collided.getY() || getBoundary().getMaxY() > collided.getY()) && getX() < collided.getX()) {
+			return CollisionFlag.EAST;
+		} else if (getBoundary().getMaxX() > collided.getBoundary().getMaxX()
+				&& (collided.getY() < getBoundary().getMaxY() || getY() < collided.getY())) {
+			return CollisionFlag.WEST;
+		}
+		return CollisionFlag.NONE;
 	}
 
 	public Position getPosition() {
-		return new Position(getX(), getY());
-	}
-
-	public boolean isMoving() {
-		return xVelocity != 0 || yVelocity != 0;
+		return position;
 	}
 
 	public double getXVelocity() {
@@ -60,40 +67,49 @@ public abstract class GameObject extends ImageView {
 		return yVelocity;
 	}
 
-	public void setYVelocity(double yVelocity) {
-		this.yVelocity = yVelocity;
-	}
-
-	public void setXVelocity(double xVelocity) {
-		this.xVelocity = xVelocity;
+	public boolean intersects(final GameObject gameObject) {
+		return gameObject.getBoundary().intersects(getBoundary())
+				&& (gameObject.getPosition().getZ() == getPosition().getZ());
 	}
 
 	public boolean isElevated() {
 		return getBoundary().getMaxY() < GameEngine.getInstance().getBackground().getHeight();
 	}
 
-	public Rectangle2D getBoundary() {
-		return new Rectangle2D(getX(), getY(), image.getWidth(), image.getHeight());
+	public boolean isMovable() {
+		return movable;
 	}
 
-	public CollisionFlag getCollisionFlag(GameObject gameObject) {
-		if (!gameObject.intersects(this)) {
-			return null;
-		} else if (this.getBoundary().contains(gameObject.getX(), this.getY())) {
-			System.out.println("hit top of object");
-		} else if (this.getBoundary().contains(this.getX(), gameObject.getY())) {
-			// intersects in the y axis
-		}
-		return null;
+	public boolean isMoving() {
+		return (xVelocity != 0) || (yVelocity != 0);
 	}
 
-	public boolean intersects(GameObject gameObject) {
-		return gameObject.getBoundary().intersects(this.getBoundary())
-				&& gameObject.getPosition().getZ() == this.getPosition().getZ();
+	public void reposition(final double x, final double y, final double z) {
+		reposition(new Position(x, y, z));
+	}
+
+	public void reposition(final Position position) {
+		this.position = position;
+		setX(position.getX());
+		setY(position.getY());
+	}
+
+	public void setXVelocity(final double xVelocity) {
+		this.xVelocity = xVelocity;
+	}
+
+	public void setYVelocity(final double yVelocity) {
+		this.yVelocity = yVelocity;
 	}
 
 	public void update() {
 		updateLocation();
+	}
+
+	private void updateLocation() {
+		if (movable) {
+			reposition((getX() + xVelocity), (getY() - yVelocity), position.getZ());
+		}
 	}
 
 }

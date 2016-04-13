@@ -1,12 +1,12 @@
-package org.bautista.ag.api.locatable.collisions;
+package org.bautista.ag.api.locatable;
 
 public enum CollisionFlag {
 
-	TOP(0), BOTTOM(1), LEFT(2), RIGHT(3);
+	NORTH(0), SOUTH(1), EAST(2), WEST(3), NONE(4);
 
 	private int index;
 
-	CollisionFlag(int index) {
+	CollisionFlag(final int index) {
 		this.index = index;
 	}
 

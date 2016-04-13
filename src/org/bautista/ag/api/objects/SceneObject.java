@@ -8,7 +8,7 @@ import javafx.scene.image.Image;
 
 public abstract class SceneObject extends GameObject implements EventHandler<Event> {
 
-	public SceneObject(Image image, Position position) {
+	public SceneObject(final Image image, final Position position) {
 		super(image, position, false);
 		super.addEventHandler(Event.ANY, this);
 	}

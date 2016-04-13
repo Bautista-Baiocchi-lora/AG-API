@@ -9,21 +9,21 @@ public enum ScrollType {
 
 	private ScrollDirection[] directions;
 
-	ScrollType(ScrollDirection... directions) {
+	ScrollType(final ScrollDirection... directions) {
 		this.directions = directions;
 	}
 
-	public boolean isValidDirection(ScrollDirection direction) {
-		for (ScrollDirection d : directions) {
+	public ScrollDirection[] getDirections() {
+		return directions;
+	}
+
+	public boolean isValidDirection(final ScrollDirection direction) {
+		for (final ScrollDirection d : directions) {
 			if (d == direction) {
 				return true;
 			}
 		}
 		return false;
-	}
-
-	public ScrollDirection[] getDirections() {
-		return directions;
 	}
 
 }

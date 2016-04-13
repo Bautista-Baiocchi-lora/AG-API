@@ -16,21 +16,21 @@ import javafx.stage.Stage;
 
 public class Test extends Application {
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		launch(args);
 	}
 
 	@Override
-	public void start(Stage primaryStage) throws Exception {
-		Background background = new Background(new Group(), new Dimension(600, 600));
+	public void start(final Stage primaryStage) throws Exception {
+		final Background background = new Background(new Group(), new Dimension(600, 600));
 		GameEngine.getInstance().createEnvironment(new Environment.Builder(background, new Gravity(), ScrollType.NONE)
 				.ricochet(new Ricochet(Ricochet.SLIGHT_DECREASE)).build());
 
-		Ball ball = new Ball(new Image(getClass().getResourceAsStream("picture.png")), new Position(100, 100));
-		ball.setXVelocity(-3);
-		ball.setYVelocity(10);
+		final Ball ball = new Ball(new Image(getClass().getResourceAsStream("picture.png")), new Position(20,20,0));
+		ball.setXVelocity(5);
+		ball.setYVelocity(0);
 
-		Square square = new Square(new Image(getClass().getResourceAsStream("square.png")), new Position(100, 300));
+		final Square square = new Square(new Image(getClass().getResourceAsStream("square.png")), new Position(100, 300, 0));
 
 		GameEngine.getInstance().add(square);
 		GameEngine.getInstance().add(ball);

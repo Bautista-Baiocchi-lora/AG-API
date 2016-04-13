@@ -6,11 +6,11 @@ public class Position {
 	private double y;
 	private double z;
 
-	public Position(double x, double y) {
+	public Position(final double x, final double y) {
 		this(x, y, 0);
 	}
 
-	public Position(double x, double y, double z) {
+	public Position(final double x, final double y, final double z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -20,24 +20,33 @@ public class Position {
 		return x;
 	}
 
-	public void setX(double x) {
-		this.x = x;
-	}
-
 	public double getY() {
 		return y;
 	}
 
-	public void setY(double y) {
+	public double getZ() {
+		return z;
+	}
+
+	public void setX(final double x) {
+		this.x = x;
+	}
+
+	public void setY(final double y) {
 		this.y = y;
 	}
 
-	public void setZ(double z) {
+	public void setZ(final double z) {
 		this.z = z;
 	}
 
-	public double getZ() {
-		return z;
+	@Override
+	public boolean equals(Object position) {
+		if (!(position instanceof Position)) {
+			return false;
+		}
+		Position p = (Position) position;
+		return p.getX() == getX() && p.getY() == getY() && p.getZ() == getZ();
 	}
 
 	@Override

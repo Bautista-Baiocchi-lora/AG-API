@@ -7,17 +7,17 @@ public enum ScrollDirection {
 	private double shift;
 	private int index;
 
-	ScrollDirection(double shift, int index) {
+	ScrollDirection(final double shift, final int index) {
 		this.shift = shift;
 		this.index = index;
 	}
 
-	public double getShift() {
-		return shift;
-	}
-
 	public int getIndex() {
 		return index;
+	}
+
+	public double getShift() {
+		return shift;
 	}
 
 }
