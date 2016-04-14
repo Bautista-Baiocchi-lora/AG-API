@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.bautista.ag.api.background.Background;
 import org.bautista.ag.api.background.scroll.ScrollDirection;
 import org.bautista.ag.api.background.scroll.ScrollType;
-import org.bautista.ag.api.locatable.Boundary;
 import org.bautista.ag.api.locatable.CollisionFlag;
 import org.bautista.ag.api.objects.GameObject;
 import org.bautista.ag.api.objects.SceneObject;
@@ -26,22 +25,17 @@ public class Environment extends Stage {
 	private final ArrayList<GameObject> gameObjects;
 	private final ArrayList<Sprite> sprites;
 	private final ArrayList<SceneObject> sceneObjects;
-	private final ArrayList<Boundary> collisionBoundaries;
 	private final ArrayList<GameObject> unrenderedGameObjects;
 
 	private Environment(final Builder builder) {
 		gameObjects = new ArrayList<GameObject>();
 		sprites = new ArrayList<Sprite>();
 		sceneObjects = new ArrayList<SceneObject>();
-		collisionBoundaries = new ArrayList<Boundary>();
 		unrenderedGameObjects = new ArrayList<GameObject>();
 		background = builder.background;
 		gravity = builder.gravity;
 		scrollType = builder.scrollType;
 		ricochet = builder.ricochet;
-		collisionBoundaries.add(
-				new Boundary(background.getX(), background.getY(), background.getWidth(), background.getHeight()));
-
 		setScene(background);
 	}
 
@@ -51,7 +45,6 @@ public class Environment extends Stage {
 		} else if (gameObject instanceof SceneObject) {
 			sceneObjects.add((SceneObject) gameObject);
 		}
-		collisionBoundaries.add(gameObject.getBoundary());
 		gameObjects.add(gameObject);
 		unrenderedGameObjects.add(gameObject);
 	}
@@ -110,7 +103,6 @@ public class Environment extends Stage {
 		} else if (gameObject instanceof SceneObject) {
 			sceneObjects.remove(gameObject);
 		}
-		collisionBoundaries.remove(gameObject.getBoundary());
 		gameObjects.remove(gameObject);
 	}
 
@@ -125,21 +117,53 @@ public class Environment extends Stage {
 	private void moveSprites() {
 		for (GameObject object : sprites) {
 			// gets the direction of the collision on the object
-			CollisionFlag side = object.getCollisionFlag(collisionBoundaries);
+			CollisionFlag side = object.getCollisionFlag(gameObjects);
 			if (side != CollisionFlag.NONE && object.isMovable()) {
+				System.out.println(side);
 				switch (side) {
 				case EAST:
-					object.setXVelocity(ricochet.applyRicochet(-1 * object.getXVelocity()));
-					break;
 				case WEST:
 					object.setXVelocity(ricochet.applyRicochet(-1 * object.getXVelocity()));
 					break;
 				case NORTH:
-					object.setYVelocity(ricochet.applyRicochet(-1 * object.getYVelocity()));
-					break;
 				case SOUTH:
 					object.setYVelocity(ricochet.applyRicochet(-1 * object.getYVelocity()));
 					break;
+				}
+			}
+			// hit right
+			if (!background.getDimension().contains((object.getBoundary().getMaxX() + object.getXVelocity()),
+					object.getY())) {
+				if (!scrollType.isValidDirection(ScrollDirection.EAST)) {
+					object.setXVelocity(ricochet.applyRicochet(-1 * object.getXVelocity()));
+				} else {
+					// request scroll
+				}
+				// hit left
+			}
+			if (!background.getDimension().contains((object.getX() + object.getXVelocity()), object.getY())) {
+				if (!scrollType.isValidDirection(ScrollDirection.WEST)) {
+					object.setXVelocity(ricochet.applyRicochet(-1 * object.getXVelocity()));
+				} else {
+					// request scroll
+				}
+				// hit bottom
+			}
+			if (!background.getDimension().contains(object.getX(),
+					object.getBoundary().getMaxY() - object.getYVelocity())) {
+				if (!scrollType.isValidDirection(ScrollDirection.SOUTH)) {
+					object.setYVelocity(ricochet.applyRicochet(-1 * object.getYVelocity()));
+				} else {
+					// request scroll
+				}
+				// hit top
+			}
+			if (!background.getDimension().contains(object.getX(), (object.getY() - object.getYVelocity()))) {
+				if (!GameEngine.getInstance().getEnvironment().getScrollType()
+						.isValidDirection(ScrollDirection.NORTH)) {
+					object.setYVelocity(ricochet.applyRicochet(-1 * object.getYVelocity()));
+				} else {
+					// request scroll
 				}
 			}
 		}

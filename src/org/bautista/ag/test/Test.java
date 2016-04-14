@@ -26,8 +26,8 @@ public class Test extends Application {
 		GameEngine.getInstance().createEnvironment(new Environment.Builder(background, new Gravity(), ScrollType.NONE)
 				.ricochet(new Ricochet(Ricochet.SLIGHT_DECREASE)).build());
 
-		final Ball ball = new Ball(new Image(getClass().getResourceAsStream("picture.png")), new Position(20, 20, 0));
-		ball.setXVelocity(5);
+		final Ball ball = new Ball(new Image(getClass().getResourceAsStream("picture.png")), new Position(100, 100, 0));
+		ball.setXVelocity(10);
 		ball.setYVelocity(0);
 
 		final Square square = new Square(new Image(getClass().getResourceAsStream("square.png")),

@@ -3,7 +3,6 @@ package org.bautista.ag.api.objects;
 import java.util.ArrayList;
 
 import org.bautista.ag.api.GameEngine;
-import org.bautista.ag.api.locatable.Boundary;
 import org.bautista.ag.api.locatable.CollisionFlag;
 import org.bautista.ag.api.locatable.Position;
 
@@ -27,22 +26,43 @@ public abstract class GameObject extends ImageView {
 		reposition(position);
 	}
 
-	public Boundary getBoundary() {
-		return new Boundary(getX(), getY(), image.getWidth(), image.getHeight());
+	public Rectangle2D getBoundary() {
+		return new Rectangle2D(getX(), getY(), image.getWidth(), image.getHeight());
 	}
 
-	public CollisionFlag getCollisionFlag(ArrayList<Boundary> boundaries) {
-		Boundary collidedBoundary = null;
-		for (Boundary boundary : boundaries) {
-			if (boundary != this.getBoundary() && boundary.intersects(this.getBoundary())) {
-				collidedBoundary = boundary;
-				break;
+	public CollisionFlag getCollisionFlag(ArrayList<GameObject> objects) {
+		for (GameObject object : objects) {
+			if (object.getBoundary().intersects(this.getBoundary())) {
+				if (this.getBoundary().getMaxY() > object.getBoundary().getMaxY()) {
+					// ball under object, means my ball getY() is in the object
+					if (this.getX() < object.getX()
+							|| (this.getX() >= object.getX() && this.getX() <= object.getBoundary().getMaxX())) {
+						// ball is somewhere inside objects x
+						return CollisionFlag.NORTH;
+					}
+				} else if (this.getY() < object.getY()) {
+					// ball above object, means my ball getMaxY() is in object
+					if (this.getX() < object.getX()
+							|| (this.getX() >= object.getX() && this.getX() <= object.getBoundary().getMaxX())) {
+						return CollisionFlag.SOUTH;
+					}
+				} else if (this.getX() < object.getX()) {
+					// ball to the left of object, means my ball getMaxX() is in
+					// object
+					if (this.getY() < object.getY()
+							|| (this.getY() <= object.getBoundary().getMaxY() && this.getY() >= object.getY())) {
+						return CollisionFlag.EAST;
+					}
+				} else if (this.getBoundary().getMaxX() > object.getBoundary().getMaxX()) {
+					// ball to the right of object, means my ball getX() is in
+					// object
+					if (this.getY() < object.getY()
+							|| (this.getY() <= object.getBoundary().getMaxY() && this.getY() >= object.getY())) {
+						return CollisionFlag.WEST;
+					}
+				}
 			}
 		}
-		if (collidedBoundary == null) {
-			return CollisionFlag.NONE;
-		} 
-		System.out.println("hit");
 		return CollisionFlag.NONE;
 	}
 
@@ -72,7 +92,7 @@ public abstract class GameObject extends ImageView {
 	}
 
 	public boolean isMoving() {
-		return (xVelocity != 0) || (yVelocity != 0);
+		return xVelocity != 0 || yVelocity != 0;
 	}
 
 	public void reposition(final double x, final double y, final double z) {
