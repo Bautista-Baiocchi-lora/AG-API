@@ -114,56 +114,87 @@ public class Environment extends Stage {
 		}
 	}
 
+	private CollisionFlag getHorizontalCollisionFlag(Sprite sprite) {
+		for (GameObject object : gameObjects) {
+			if (sprite != object && object.getBoundary().intersects(sprite.getBoundary())) {
+				if (this.getX() < object.getX()) {
+					return CollisionFlag.EAST;
+				} else if (sprite.getBoundary().getMaxX() > object.getBoundary().getMaxX()) {
+					return CollisionFlag.WEST;
+				}
+			}
+		}
+		return CollisionFlag.NONE;
+	}
+
+	private CollisionFlag getVerticalCollisionFlag(Sprite sprite) {
+		for (GameObject object : gameObjects) {
+			if (sprite != object && object.getBoundary().intersects(sprite.getBoundary())) {
+				if (sprite.getBoundary().getMaxY() > object.getBoundary().getMaxY()) {
+					return CollisionFlag.NORTH;
+				} else if (sprite.getY() < object.getY()) {
+					return CollisionFlag.SOUTH;
+				}
+			}
+		}
+		return CollisionFlag.NONE;
+	}
+
+	private CollisionFlag getWallCollisionFlag(Sprite sprite) {
+		// hit right
+		if (!background.getDimension().contains((sprite.getBoundary().getMaxX() + sprite.getXVelocity()),
+				sprite.getY())) {
+			if (!scrollType.isValidDirection(ScrollDirection.EAST)) {
+				return CollisionFlag.EAST;
+			}
+			// hit left
+		}
+		if (!background.getDimension().contains((sprite.getX() + sprite.getXVelocity()), sprite.getY())) {
+			if (!scrollType.isValidDirection(ScrollDirection.WEST)) {
+				return CollisionFlag.WEST;
+			}
+			// hit bottom
+		}
+		if (!background.getDimension().contains(sprite.getX(),
+				sprite.getBoundary().getMaxY() - sprite.getYVelocity())) {
+			if (!scrollType.isValidDirection(ScrollDirection.SOUTH)) {
+				return CollisionFlag.SOUTH;
+			}
+			// hit top
+		}
+		if (!background.getDimension().contains(sprite.getX(), (sprite.getY() - sprite.getYVelocity()))) {
+			if (!GameEngine.getInstance().getEnvironment().getScrollType().isValidDirection(ScrollDirection.NORTH)) {
+				return CollisionFlag.NORTH;
+			}
+		}
+		return CollisionFlag.NONE;
+	}
+
+	private ArrayList<CollisionFlag> getCollisionFlags(Sprite sprite) {
+		ArrayList<CollisionFlag> flags = new ArrayList<CollisionFlag>();
+		flags.add(getVerticalCollisionFlag(sprite));
+		flags.add(getHorizontalCollisionFlag(sprite));
+		flags.add(getWallCollisionFlag(sprite));
+		return flags;
+	}
+
 	private void moveSprites() {
-		for (GameObject object : sprites) {
-			// gets the direction of the collision on the object
-			CollisionFlag side = object.getCollisionFlag(gameObjects);
-			if (side != CollisionFlag.NONE && object.isMovable()) {
-				System.out.println(side);
-				switch (side) {
-				case EAST:
-				case WEST:
-					object.setXVelocity(ricochet.applyRicochet(-1 * object.getXVelocity()));
-					break;
-				case NORTH:
-				case SOUTH:
-					object.setYVelocity(ricochet.applyRicochet(-1 * object.getYVelocity()));
-					break;
-				}
-			}
-			// hit right
-			if (!background.getDimension().contains((object.getBoundary().getMaxX() + object.getXVelocity()),
-					object.getY())) {
-				if (!scrollType.isValidDirection(ScrollDirection.EAST)) {
-					object.setXVelocity(ricochet.applyRicochet(-1 * object.getXVelocity()));
-				} else {
-					// request scroll
-				}
-				// hit left
-			}
-			if (!background.getDimension().contains((object.getX() + object.getXVelocity()), object.getY())) {
-				if (!scrollType.isValidDirection(ScrollDirection.WEST)) {
-					object.setXVelocity(ricochet.applyRicochet(-1 * object.getXVelocity()));
-				} else {
-					// request scroll
-				}
-				// hit bottom
-			}
-			if (!background.getDimension().contains(object.getX(),
-					object.getBoundary().getMaxY() - object.getYVelocity())) {
-				if (!scrollType.isValidDirection(ScrollDirection.SOUTH)) {
-					object.setYVelocity(ricochet.applyRicochet(-1 * object.getYVelocity()));
-				} else {
-					// request scroll
-				}
-				// hit top
-			}
-			if (!background.getDimension().contains(object.getX(), (object.getY() - object.getYVelocity()))) {
-				if (!GameEngine.getInstance().getEnvironment().getScrollType()
-						.isValidDirection(ScrollDirection.NORTH)) {
-					object.setYVelocity(ricochet.applyRicochet(-1 * object.getYVelocity()));
-				} else {
-					// request scroll
+		for (Sprite sprite : sprites) {
+			ArrayList<CollisionFlag> collisions = getCollisionFlags(sprite);
+			if (sprite.isMovable()) {
+				for (CollisionFlag flag : collisions) {
+					switch (flag) {
+					case NONE:
+						break;
+					case EAST:
+					case WEST:
+						sprite.setXVelocity(ricochet.applyRicochet(-1 * sprite.getXVelocity()));
+						break;
+					case NORTH:
+					case SOUTH:
+						sprite.setYVelocity(ricochet.applyRicochet(-1 * sprite.getYVelocity()));
+						break;
+					}
 				}
 			}
 		}

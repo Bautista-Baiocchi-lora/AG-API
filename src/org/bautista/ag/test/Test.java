@@ -27,8 +27,8 @@ public class Test extends Application {
 				.ricochet(new Ricochet(Ricochet.SLIGHT_DECREASE)).build());
 
 		final Ball ball = new Ball(new Image(getClass().getResourceAsStream("picture.png")), new Position(100, 100, 0));
-		ball.setXVelocity(10);
-		ball.setYVelocity(0);
+		ball.setXVelocity(5);
+		ball.setYVelocity(2);
 
 		final Square square = new Square(new Image(getClass().getResourceAsStream("square.png")),
 				new Position(200, 200, 0));
