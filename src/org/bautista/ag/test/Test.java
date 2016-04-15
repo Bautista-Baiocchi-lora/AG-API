@@ -24,11 +24,11 @@ public class Test extends Application {
 	public void start(final Stage primaryStage) throws Exception {
 		final Background background = new Background(new Group(), new Dimension(600, 600));
 		GameEngine.getInstance().createEnvironment(new Environment.Builder(background, new Gravity(), ScrollType.NONE)
-				.ricochet(new Ricochet(Ricochet.SLIGHT_DECREASE)).build());
+				.ricochet(new Ricochet(Ricochet.NONE)).build());
 
 		final Ball ball = new Ball(new Image(getClass().getResourceAsStream("picture.png")), new Position(100, 100, 0));
-		ball.setXVelocity(5);
-		ball.setYVelocity(2);
+		ball.setXVelocity(6);
+		ball.setYVelocity(10);
 
 		final Square square = new Square(new Image(getClass().getResourceAsStream("square.png")),
 				new Position(200, 200, 0));

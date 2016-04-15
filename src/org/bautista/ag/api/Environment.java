@@ -13,7 +13,6 @@ import org.bautista.ag.api.physics.Gravity;
 import org.bautista.ag.api.physics.Ricochet;
 
 import javafx.animation.AnimationTimer;
-import javafx.geometry.Rectangle2D;
 import javafx.stage.Stage;
 
 public class Environment extends Stage {
@@ -109,17 +108,18 @@ public class Environment extends Stage {
 	private void applyGravity() {
 		for (final GameObject object : sprites) {
 			if (object.isElevated() && object.isMovable()) {
+				System.out.println("Elevated");
 				object.setYVelocity(object.getYVelocity() + gravity.getVelocity());
 			}
 		}
 	}
 
-	private CollisionFlag getHorizontalCollisionFlag(Sprite sprite) {
+	private CollisionFlag getHorizontalCollisionFlag(GameObject gameObject) {
 		for (GameObject object : gameObjects) {
-			if (sprite != object && object.getBoundary().intersects(sprite.getBoundary())) {
-				if (this.getX() < object.getX()) {
+			if (gameObject != object && object.getBoundary().intersects(gameObject.getBoundary())) {
+				if (gameObject.getX() < object.getX()) {
 					return CollisionFlag.EAST;
-				} else if (sprite.getBoundary().getMaxX() > object.getBoundary().getMaxX()) {
+				} else if (gameObject.getBoundary().getMaxX() > object.getBoundary().getMaxX()) {
 					return CollisionFlag.WEST;
 				}
 			}
@@ -127,12 +127,12 @@ public class Environment extends Stage {
 		return CollisionFlag.NONE;
 	}
 
-	private CollisionFlag getVerticalCollisionFlag(Sprite sprite) {
+	private CollisionFlag getVerticalCollisionFlag(GameObject gameObject) {
 		for (GameObject object : gameObjects) {
-			if (sprite != object && object.getBoundary().intersects(sprite.getBoundary())) {
-				if (sprite.getBoundary().getMaxY() > object.getBoundary().getMaxY()) {
+			if (gameObject != object && object.getBoundary().intersects(gameObject.getBoundary())) {
+				if (gameObject.getBoundary().getMaxY() > object.getBoundary().getMaxY()) {
 					return CollisionFlag.NORTH;
-				} else if (sprite.getY() < object.getY()) {
+				} else if (gameObject.getY() < object.getY()) {
 					return CollisionFlag.SOUTH;
 				}
 			}
@@ -140,29 +140,29 @@ public class Environment extends Stage {
 		return CollisionFlag.NONE;
 	}
 
-	private CollisionFlag getWallCollisionFlag(Sprite sprite) {
+	private CollisionFlag getWallCollisionFlag(GameObject gameObject) {
 		// hit right
-		if (!background.getDimension().contains((sprite.getBoundary().getMaxX() + sprite.getXVelocity()),
-				sprite.getY())) {
+		if (!background.getDimension().contains((gameObject.getBoundary().getMaxX() + gameObject.getXVelocity()),
+				gameObject.getY())) {
 			if (!scrollType.isValidDirection(ScrollDirection.EAST)) {
 				return CollisionFlag.EAST;
 			}
 			// hit left
 		}
-		if (!background.getDimension().contains((sprite.getX() + sprite.getXVelocity()), sprite.getY())) {
+		if (!background.getDimension().contains((gameObject.getX() + gameObject.getXVelocity()), gameObject.getY())) {
 			if (!scrollType.isValidDirection(ScrollDirection.WEST)) {
 				return CollisionFlag.WEST;
 			}
 			// hit bottom
 		}
-		if (!background.getDimension().contains(sprite.getX(),
-				sprite.getBoundary().getMaxY() - sprite.getYVelocity())) {
+		if (!background.getDimension().contains(gameObject.getX(),
+				gameObject.getBoundary().getMaxY() - gameObject.getYVelocity())) {
 			if (!scrollType.isValidDirection(ScrollDirection.SOUTH)) {
 				return CollisionFlag.SOUTH;
 			}
 			// hit top
 		}
-		if (!background.getDimension().contains(sprite.getX(), (sprite.getY() - sprite.getYVelocity()))) {
+		if (!background.getDimension().contains(gameObject.getX(), (gameObject.getY() - gameObject.getYVelocity()))) {
 			if (!GameEngine.getInstance().getEnvironment().getScrollType().isValidDirection(ScrollDirection.NORTH)) {
 				return CollisionFlag.NORTH;
 			}
@@ -170,11 +170,11 @@ public class Environment extends Stage {
 		return CollisionFlag.NONE;
 	}
 
-	private ArrayList<CollisionFlag> getCollisionFlags(Sprite sprite) {
+	public ArrayList<CollisionFlag> getCollisionFlags(GameObject gameObject) {
 		ArrayList<CollisionFlag> flags = new ArrayList<CollisionFlag>();
-		flags.add(getVerticalCollisionFlag(sprite));
-		flags.add(getHorizontalCollisionFlag(sprite));
-		flags.add(getWallCollisionFlag(sprite));
+		flags.add(getHorizontalCollisionFlag(gameObject));
+		flags.add(getWallCollisionFlag(gameObject));
+		flags.add(getVerticalCollisionFlag(gameObject));
 		return flags;
 	}
 
@@ -182,7 +182,9 @@ public class Environment extends Stage {
 		for (Sprite sprite : sprites) {
 			ArrayList<CollisionFlag> collisions = getCollisionFlags(sprite);
 			if (sprite.isMovable()) {
+				System.out.println("start.");
 				for (CollisionFlag flag : collisions) {
+					System.out.println(flag);
 					switch (flag) {
 					case NONE:
 						break;
@@ -196,6 +198,8 @@ public class Environment extends Stage {
 						break;
 					}
 				}
+				System.out.println("X Velocity: "+sprite.getXVelocity()+", Y Velocity: "+sprite.getYVelocity());
+				System.out.println("stop.");
 			}
 		}
 	}

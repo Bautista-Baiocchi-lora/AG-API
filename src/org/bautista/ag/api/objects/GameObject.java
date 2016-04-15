@@ -42,13 +42,17 @@ public abstract class GameObject extends ImageView {
 		return yVelocity;
 	}
 
+	public ArrayList<CollisionFlag> getCollisionFlags() {
+		return GameEngine.getInstance().getEnvironment().getCollisionFlags(this);
+	}
+
 	public boolean intersects(final GameObject gameObject) {
 		return gameObject.getBoundary().intersects(getBoundary())
 				&& (gameObject.getPosition().getZ() == getPosition().getZ());
 	}
 
 	public boolean isElevated() {
-		return getBoundary().getMaxY() < GameEngine.getInstance().getBackground().getHeight();
+		return getBoundary().getMaxY() <= GameEngine.getInstance().getBackground().getHeight();
 	}
 
 	public boolean isMovable() {
@@ -82,9 +86,7 @@ public abstract class GameObject extends ImageView {
 	}
 
 	private void updateLocation() {
-		if (movable) {
-			reposition((getX() + xVelocity), (getY() - yVelocity), position.getZ());
-		}
+		reposition((getX() + xVelocity), (getY() - yVelocity), position.getZ());
 	}
 
 }
